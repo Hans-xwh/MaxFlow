@@ -37,7 +37,8 @@ public class Nodo
         g.DrawEllipse(Pborde, boundingBox);
 
         //Dibujar texto (aun no implementado xd|)
-
+        SizeF textSize = g.MeasureString(Nombre, font); //Cajita autotamaño para el texto
+        g.DrawString(Nombre, font, Btexto, Posicion.X - textSize.Width / 2, Posicion.Y - textSize.Height / 2);
     }
 }
 
@@ -68,7 +69,14 @@ public class Arista
         //Dibujar linea
         g.DrawLine(Plinea, Origen.Posicion, Destino.Posicion);
 
-        //Dibujar texto (aun no implementado tampoco xd)
+        //Dibujar texto
+        Point pMedio = new Point((Origen.Posicion.X + Destino.Posicion.X) / 2, (Origen.Posicion.Y + Destino.Posicion.Y) / 2);   //Carajo como odio winforms xd
+        //string textoCapacidad = $"{Flujo}/{Capacidad}";
+        string textoCapacidad = $"{Capacidad}";
+
+        SizeF size = g.MeasureString(textoCapacidad, font);
+        g.FillRectangle(Brushes.White, pMedio.X - (size.Width / 2), pMedio.Y - (size.Height / 2), size.Width, size.Height);
+        g.DrawString(textoCapacidad, font, Btexto, pMedio.X - (size.Width / 2), pMedio.Y - (size.Height / 2));
     }
 
 }

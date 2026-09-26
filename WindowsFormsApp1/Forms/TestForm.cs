@@ -13,11 +13,16 @@ namespace MaxFlow.Forms
         {
             //InitializeComponent();
 
+            this.Text = "Prueba de grafos";
+            this.Size = new Size(800, 450);
+
+
             // ACTIVAR DOUBLE BUFFERING PARA EVITAR PARPADEO
             this.SetStyle(ControlStyles.AllPaintingInWmPaint |
                           ControlStyles.UserPaint |
                           ControlStyles.DoubleBuffer, true);
             this.UpdateStyles();
+
 
             //Inicializar y cargar un grafo de 8 nodos
             CargarGrafoPrueba();
