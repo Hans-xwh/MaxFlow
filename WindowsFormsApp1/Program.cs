@@ -4,6 +4,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
+using MaxFlow.Model;
+using MaxFlow.Forms;
+
 namespace WindowsFormsApp1
 {
     internal static class Program
@@ -16,7 +19,8 @@ namespace WindowsFormsApp1
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new Form1());
+            //Application.Run(new Form1());
+            Application.Run(new FormPruebaDibujo());
         }
     }
 }
