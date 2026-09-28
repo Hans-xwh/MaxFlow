@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -66,8 +67,25 @@ public class Arista
         using Brush Btexto = new SolidBrush(Color.Black);
         using Font font = new Font("Arial", 12);
 
+        //Calcular Flecha
+        using AdjustableArrowCap flecha = new AdjustableArrowCap(6, 6, true);
+        Plinea.CustomEndCap = flecha;
+
+        float dx = Destino.Posicion.X - Origen.Posicion.X;
+        float dy = Destino.Posicion.Y - Origen.Posicion.Y;
+        double distancia = Math.Sqrt(dx * dx + dy * dy);
+        Point llegada = Destino.Posicion;
+
+        if (distancia > 0)
+        {
+            int radioNodo = 20; //Despues mover a que el nodo guarde su rango
+            int endX = (int)(Destino.Posicion.X - (dx / distancia) * radioNodo);
+            int endY = (int)(Destino.Posicion.Y - (dy / distancia) * radioNodo);    //Im never doing math again :sob:
+            llegada = new Point(endX, endY);
+        }   
+
         //Dibujar linea
-        g.DrawLine(Plinea, Origen.Posicion, Destino.Posicion);
+        g.DrawLine(Plinea, Origen.Posicion, llegada);
 
         //Dibujar texto
         Point pMedio = new Point((Origen.Posicion.X + Destino.Posicion.X) / 2, (Origen.Posicion.Y + Destino.Posicion.Y) / 2);   //Carajo como odio winforms xd
