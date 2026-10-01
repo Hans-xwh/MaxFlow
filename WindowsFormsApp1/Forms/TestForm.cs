@@ -25,7 +25,8 @@ namespace MaxFlow.Forms
 
 
             //Inicializar y cargar un grafo de 8 nodos
-            CargarGrafoPrueba();
+            //CargarGrafoPrueba();
+            grafoPrueba = new Grafo("");    //String vacio carga el archivo por defecto
         }
 
         private void CargarGrafoPrueba()

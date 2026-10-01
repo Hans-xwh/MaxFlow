@@ -1,7 +1,10 @@
-﻿using System;
+﻿#nullable enable
+
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -52,12 +55,14 @@ public class Arista
     public int Capacidad { get; set; } //Capacidad de la arista
     public int CapacidadResidual { get; set; } //Capacidad residual de la arista
 
-    public Arista(Nodo origen, Nodo destino, int capacidad)
+    public Arista(Nodo origen, Nodo destino, int capacidad, int flujo=0, int id=0)
     {
         Origen = origen;
         Destino = destino;
         Capacidad = capacidad;
         CapacidadResidual = capacidad; //Inicialmente la capacidad residual es igual a la capacidad, ni idea si asi funciona esto xd
+        Flujo = flujo;
+        Id = id;
     }
 
     public void Draw(Graphics g)
@@ -78,7 +83,7 @@ public class Arista
 
         if (distancia > 0)
         {
-            int radioNodo = 20; //Despues mover a que el nodo guarde su rango
+            int radioNodo = 20; //Despues mover a que el nodo guarde su radio
             int endX = (int)(Destino.Posicion.X - (dx / distancia) * radioNodo);
             int endY = (int)(Destino.Posicion.Y - (dy / distancia) * radioNodo);    //Im never doing math again :sob:
             llegada = new Point(endX, endY);
@@ -89,8 +94,8 @@ public class Arista
 
         //Dibujar texto
         Point pMedio = new Point((Origen.Posicion.X + Destino.Posicion.X) / 2, (Origen.Posicion.Y + Destino.Posicion.Y) / 2);   //Carajo como odio winforms xd
-        //string textoCapacidad = $"{Flujo}/{Capacidad}";
-        string textoCapacidad = $"{Capacidad}";
+        string textoCapacidad = $"{Capacidad}/{Flujo}";
+        //string textoCapacidad = $"{Capacidad}";
 
         SizeF size = g.MeasureString(textoCapacidad, font);
         g.FillRectangle(Brushes.White, pMedio.X - (size.Width / 2), pMedio.Y - (size.Height / 2), size.Width, size.Height);
@@ -103,6 +108,90 @@ public class Grafo
 {
     public List<Nodo> Nodos { get; private set; } = new List<Nodo>();
     public List<Arista> Aristas { get; private set; } = new List<Arista>();
+
+    public Grafo(string? filePath=null) //Si no se pasa ningun parametro, se crea un grafo en blanco
+    {
+        string RutaPorDefecto = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "grafo.csv");
+        if (filePath != null && File.Exists(filePath))
+        {
+            LoadFromFile(filePath);
+        }
+        else if (filePath != null)
+        {
+            LoadFromFile(RutaPorDefecto); //Intentar cargar el grafo por defecto
+        }
+    }
+
+    private bool LoadFromFile(string filePath)
+    {
+        // Nodos: Id,Nombre,X,Y
+        // Aristas: Id,OrigenId,DestinoId,Capacidad,Flujo
+
+        if (!File.Exists(filePath))
+        {
+            //throw new FileNotFoundException($"El archivo {filePath} no existe.");
+            return false;
+        }
+
+        Nodos.Clear();
+        Aristas.Clear();
+
+        //Reading code stolen from MakeAuth3d_DB :P    
+        string mode = "[NODOS]";
+
+        using StreamReader reader = new(filePath);
+        string? line;
+        while ((line = reader.ReadLine()) != null)
+        {
+            //Skip empty lines or comments
+            if (string.IsNullOrWhiteSpace(line) || line.StartsWith("#")) continue;
+            line = line.Trim();
+
+            //Split
+            string[] parts = line.Split(',');
+
+            if (parts.Length == 1) {
+                mode = parts[0].ToUpper();
+                continue;
+            }
+
+            //Nodos
+            if (mode == "[NODOS]" && parts.Length >= 4)
+            {
+                int id = int.Parse(parts[0]);
+                string nombre = parts[1];
+                int x = int.Parse(parts[2]);
+                int y = int.Parse(parts[3]);
+                Nodo nodo = new Nodo(id, nombre, new Point(x, y));
+                Nodos.Add(nodo);
+            }
+
+            else if (mode == "[ARISTAS]" && parts.Length >= 5)
+            {
+                int id = int.Parse(parts[0]);
+                int origenId = int.Parse(parts[1]);
+                int destinoId = int.Parse(parts[2]);
+                int capacidad = int.Parse(parts[3]);
+                int flujo = int.Parse(parts[4]);
+
+                //Conectar nodos
+                Nodo? origen = Nodos.FirstOrDefault(n => n.Id == origenId);
+                Nodo? destino = Nodos.FirstOrDefault(n => n.Id == destinoId);
+
+                if (origen != null && destino != null)  //Esto skipea aristas con conexiones invalidas.
+                {
+                    Arista arista = new Arista(origen, destino, capacidad, flujo, id);
+                    Aristas.Add(arista);
+                }
+            }
+        }
+        return true;
+    }
+
+    private void SaveToFile(string filePath)
+    {
+
+    }
 
     public bool CheckLoops()
     {
