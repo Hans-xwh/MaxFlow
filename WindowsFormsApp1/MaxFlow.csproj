@@ -49,6 +49,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Classes\FordFulkerson.cs" />
     <Compile Include="Classes\Grafo.cs" />
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>

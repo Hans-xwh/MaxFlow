@@ -65,10 +65,13 @@ public class Arista
         Id = id;
     }
 
-    public void Draw(Graphics g)
+    public void Draw(Graphics g, bool resaltada = false)
     {
         //Cositas para dibujar
-        using Pen Plinea = new Pen(Color.DimGray, 2);
+        using Pen Plinea = new Pen(
+            resaltada ? Color.Red : Color.DimGray,
+            resaltada ? 4 : 2
+        );
         using Brush Btexto = new SolidBrush(Color.Black);
         using Font font = new Font("Arial", 12);
 
@@ -199,21 +202,34 @@ public class Grafo
         return false;
     }
 
-    public void Draw(Graphics g)
+    public void Draw(Graphics g, IEnumerable<Arista>? aristasResaltadas = null)
     {
-        g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias; //Holly nutz!
+        g.SmoothingMode =
+            System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
 
-        //Aristas primero por q empiezan desde el centro del nodo y si no se ve raro
-        foreach(Arista arista in Aristas)
+        // Convertimos las aristas resaltadas en un conjunto
+        // para poder buscarlas rápidamente.
+        HashSet<Arista> resaltadas =
+            aristasResaltadas != null
+                ? new HashSet<Arista>(aristasResaltadas)
+                : new HashSet<Arista>();
+
+
+        // Dibujar aristas primero
+        foreach (Arista arista in Aristas)
         {
-            arista.Draw(g);
+            bool resaltada =
+                resaltadas.Contains(arista);
+
+            arista.Draw(g, resaltada);
         }
 
+
+        // Dibujar nodos después
         foreach (Nodo nodo in Nodos)
         {
             nodo.Draw(g);
         }
-
     }
 
 }
