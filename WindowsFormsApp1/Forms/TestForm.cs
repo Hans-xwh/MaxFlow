@@ -1,10 +1,13 @@
-﻿using MaxFlow.Model;
-using System;
+﻿using System;
 using System.Drawing;
 using System.Windows.Forms;
-using WindowsFormsApp1.Classes;
 using System.Linq;
 using System.Text;
+
+using MaxFlow.Model;
+using MaxFlow.Fulkerson;
+
+#nullable enable
 
 namespace MaxFlow.Forms
 {
