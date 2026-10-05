@@ -8,8 +8,7 @@ using MaxFlow.Model;
 namespace MaxFlow.Fulkerson;
 
 // Representa un movimiento dentro de la red residual
-internal class MovimientoResidual
-{
+internal class MovimientoResidual{
     public Arista Arista { get; set; }
     public bool HaciaAdelante { get; set; }
     public int CapacidadResidual { get; set; }
@@ -25,8 +24,7 @@ internal class MovimientoResidual
     }
 }
 
-internal class AristaResidual
-{
+internal class AristaResidual{
     public Nodo Origen { get; set; }
     public Nodo Destino { get; set; }
     public int Capacidad { get; set; }
@@ -59,8 +57,7 @@ internal class PasoFordFulkerson
 
     public int FlujoAcumulado { get; set; }
 }
-internal class FordFulkerson
-{
+internal class FordFulkerson{
     private Grafo grafo;
     private Nodo fuente;
     private Nodo sumidero;

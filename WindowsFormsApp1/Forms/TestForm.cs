@@ -28,9 +28,7 @@ namespace MaxFlow.Forms
 
 
             // ACTIVAR DOUBLE BUFFERING PARA EVITAR PARPADEO
-            this.SetStyle(ControlStyles.AllPaintingInWmPaint |
-                          ControlStyles.UserPaint |
-                          ControlStyles.DoubleBuffer, true);
+            this.SetStyle(ControlStyles.AllPaintingInWmPaint |ControlStyles.UserPaint |ControlStyles.DoubleBuffer, true);
             this.UpdateStyles();
 
 
@@ -63,13 +61,7 @@ namespace MaxFlow.Forms
 
             etiquetaPaso.Location = new Point(20, 325);
             etiquetaPaso.Size = new Size(550, 170);
-
-            etiquetaPaso.Font = new Font(
-                "Arial",
-                10,
-                FontStyle.Regular
-            );
-
+            etiquetaPaso.Font = new Font("Arial",10,FontStyle.Regular);
             etiquetaPaso.Text = "Presiona 'Siguiente paso' para comenzar.";
 
             this.Controls.Add(etiquetaPaso);
@@ -80,10 +72,8 @@ namespace MaxFlow.Forms
 
             labelRedResidual.Location = new Point(580, 325);
             labelRedResidual.Size = new Size(280, 260);
-
             labelRedResidual.AutoSize = false;
             labelRedResidual.Font = new Font("Arial", 10);
-
             labelRedResidual.Text = "Red residual:";
 
             this.Controls.Add(labelRedResidual);
@@ -92,22 +82,18 @@ namespace MaxFlow.Forms
         private void BotonSiguiente_Click(object sender, EventArgs e)
         {
             if (algoritmo == null)
+            {
                 return;
-
+            }
+            
             bool pudoAvanzar = algoritmo.SiguientePaso();
 
             // Si no existe otro camino, terminamos
             if (!pudoAvanzar)
             {
-                etiquetaPaso.Text =
-                    "ALGORITMO TERMINADO\n" +
-                    "Flujo máximo: " +
-                    algoritmo.FlujoMaximo;
-
+                etiquetaPaso.Text = "ALGORITMO TERMINADO\n" + "Flujo máximo: " + algoritmo.FlujoMaximo;
                 botonSiguiente.Enabled = false;
-
                 this.Invalidate();
-
                 return;
             }
 
@@ -116,7 +102,9 @@ namespace MaxFlow.Forms
                 algoritmo.UltimoPaso;
 
             if (paso == null)
+            {
                 return;
+            }
 
             // Construir texto del camino
             string camino =
