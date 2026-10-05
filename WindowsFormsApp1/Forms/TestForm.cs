@@ -116,15 +116,12 @@ namespace MaxFlow.Forms
             // Construir texto de capacidades residuales
             string residuales = "";
 
-            foreach (MovimientoResidual movimiento
-                     in paso.Movimientos)
+            foreach (MovimientoResidual movimiento in paso.Movimientos)
             {
-                Arista arista =
-                    movimiento.Arista;
+                Arista arista = movimiento.Arista;
 
                 string origen;
                 string destino;
-
                 if (movimiento.HaciaAdelante)
                 {
                     origen = arista.Origen.Nombre;
@@ -143,11 +140,7 @@ namespace MaxFlow.Forms
 
             // Mostrar información
             etiquetaPaso.Text =
-                $"Paso: {paso.NumeroPaso}\n" +
-                $"Camino: {camino}\n" +
-                $"Incremento (Δ): {paso.Incremento}\n" +
-                $"Flujo acumulado: {paso.FlujoAcumulado}\n" +
-                $"Capacidades residuales:\n{residuales}";
+                $"Paso: {paso.NumeroPaso}\n" + $"Camino: {camino}\n" + $"Incremento (Δ): {paso.Incremento}\n" + $"Flujo acumulado: {paso.FlujoAcumulado}\n" + $"Capacidades residuales:\n{residuales}";
 
             MostrarRedResidual();
             // Redibujar el grafo
