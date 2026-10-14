@@ -132,8 +132,10 @@ public class Grafo
 
         if (!File.Exists(filePath))
         {
-            //throw new FileNotFoundException($"El archivo {filePath} no existe.");
-            return false;
+            GenDefault();
+            SaveToFile(filePath);
+
+            return false;   //Retorna false en caso se haya tenido que generar el grafo por defecto.
         }
 
         Nodos.Clear();
@@ -191,15 +193,63 @@ public class Grafo
         return true;
     }
 
-    private void SaveToFile(string filePath)
+    private bool SaveToFile(string filePath)
     {
+        // Nodos: Id,Nombre,X,Y
+        // Aristas: Id,OrigenId,DestinoId,Capacidad,Flujo
 
+        using StreamWriter writer = new(filePath, append:false);    //C# es divertido xd
+
+        // Escribir Nodos //
+        writer.WriteLine("[NODOS]");
+        writer.WriteLine("# Id,Nombre,X,Y");
+
+        foreach (Nodo nodo in Nodos)
+        {
+            writer.WriteLine($"{nodo.Id},{nodo.Nombre},{nodo.Posicion.X},{nodo.Posicion.Y}");
+        }
+
+        // Escribir Aristas //
+        writer.WriteLine("[ARISTAS]");
+        writer.WriteLine("# Id,OrigenId,DestinoId,Capacidad,Flujo");
+        foreach (Arista arista in Aristas)
+        {
+            writer.WriteLine($"{arista.Id},{arista.Origen.Id},{arista.Destino.Id},{arista.Capacidad},{arista.Flujo}");
+        }
+            return true;
     }
 
     public bool CheckLoops()
     {
         //TODO: Implementar la verificación de bucles en el grafo xd
         return false;
+    }
+
+    public void GenDefault()
+    {
+        //Crear 8 Nodos distribuidos en el lienzo
+        Nodo n1 = new Nodo(1, "S", new Point(80, 200));   // Fuente
+        Nodo n2 = new Nodo(2, "A", new Point(220, 100));
+        Nodo n3 = new Nodo(3, "B", new Point(220, 300));
+        Nodo n4 = new Nodo(4, "C", new Point(380, 100));
+        Nodo n5 = new Nodo(5, "D", new Point(380, 300));
+        Nodo n6 = new Nodo(6, "E", new Point(540, 100));
+        Nodo n7 = new Nodo(7, "F", new Point(540, 300));
+        Nodo n8 = new Nodo(8, "T", new Point(680, 200));   // Sumidero
+
+        this.Nodos.AddRange(new[] { n1, n2, n3, n4, n5, n6, n7, n8 });
+
+        //Crear Aristas con capacidades arbitrarias
+        this.Aristas.Add(new Arista(n1, n2, 10, id:1));
+        this.Aristas.Add(new Arista(n1, n3, 8, id:2));
+        this.Aristas.Add(new Arista(n2, n4, 5, id:3));
+        this.Aristas.Add(new Arista(n2, n5, 7, id:4));
+        this.Aristas.Add(new Arista(n3, n5, 10, id:5));
+        this.Aristas.Add(new Arista(n4, n6, 8, id:6));
+        this.Aristas.Add(new Arista(n5, n4, 4, id:7));
+        this.Aristas.Add(new Arista(n5, n7, 9, id:8));
+        this.Aristas.Add(new Arista(n6, n8, 12, id:9));
+        this.Aristas.Add(new Arista(n7, n8, 10, id:10));
     }
 
     public void Draw(Graphics g, IEnumerable<Arista>? aristasResaltadas = null)
