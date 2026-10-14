@@ -109,6 +109,13 @@ public class Arista
 
 public class Grafo
 {
+    private enum EstadoNodo
+    {
+        Blanco, //No visitado
+        Gris,   //Visitando
+        Negro   //Visitado
+    }
+
     public List<Nodo> Nodos { get; private set; } = new List<Nodo>();
     public List<Arista> Aristas { get; private set; } = new List<Arista>();
 
@@ -193,7 +200,7 @@ public class Grafo
         return true;
     }
 
-    private bool SaveToFile(string filePath)
+    public bool SaveToFile(string filePath)
     {
         // Nodos: Id,Nombre,X,Y
         // Aristas: Id,OrigenId,DestinoId,Capacidad,Flujo
@@ -219,9 +226,22 @@ public class Grafo
             return true;
     }
 
-    public bool CheckLoops()
+    public bool CheckLoops(bool fix=false)
     {
-        //TODO: Implementar la verificación de bucles en el grafo xd
+        Dictionary<int, EstadoNodo> estados = Nodos.ToDictionary(n => n.Id, n => EstadoNodo.Blanco);
+
+        //Iterar nodos
+        foreach(Nodo nodo in Nodos)
+        {
+            if (estados[nodo.Id] == EstadoNodo.Blanco)
+            {
+                if (DFS(nodo, estados, fix))
+                {
+                    return true;    //Se encontro un bucle
+                }
+            }
+        }
+
         return false;
     }
 
@@ -252,6 +272,14 @@ public class Grafo
         this.Aristas.Add(new Arista(n7, n8, 10, id:10));
     }
 
+    public void GenRandom(int numNodos)
+    {
+        numNodos = Math.Max(7, numNodos); //Asegurarse de que haya al menos 7 nodos
+        numNodos = Math.Min(16, numNodos); //Limitar a 16 nodos 
+
+        //TODO implementar esto xd
+    }
+
     public void Draw(Graphics g, IEnumerable<Arista>? aristasResaltadas = null)
     {
         g.SmoothingMode =
@@ -280,6 +308,42 @@ public class Grafo
         {
             nodo.Draw(g);
         }
+    }
+
+    private bool DFS(Nodo nodo, Dictionary<int, EstadoNodo> estados, bool fix)
+    {
+        estados[nodo.Id] = EstadoNodo.Gris; //Como extraño mis enums en python
+
+        //Lista de aristas salientes al nodo actual
+        List<Arista> salientes = Aristas.Where(a => a.Origen.Id == nodo.Id).ToList();
+
+        foreach(Arista arista in salientes)
+        {
+            Nodo vecino = arista.Destino;
+
+            //Caso vecino gris, ciclo encontrado
+            if (estados[vecino.Id] == EstadoNodo.Gris)
+            {
+                if (fix)
+                {
+                    Aristas.Remove(arista);
+                }
+                return true;
+            }
+
+            //Caso vecino blanco, nodo sin explorar
+            else if (estados[vecino.Id] == EstadoNodo.Blanco)
+            {
+                if (DFS(vecino, estados, fix))
+                {
+                    return true;
+                }
+            }
+        }
+
+        //No se encontraron ciclos
+        estados[nodo.Id] = EstadoNodo.Negro;
+        return false;
     }
 
 }
