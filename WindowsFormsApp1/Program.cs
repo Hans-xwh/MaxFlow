@@ -1,11 +1,11 @@
-﻿using System;
+﻿using MaxFlow.Forms;
+using MaxFlow.Model;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-
-using MaxFlow.Model;
-using MaxFlow.Forms;
+using WindowsFormsApp1.Forms;
 
 namespace WindowsFormsApp1
 {
@@ -20,7 +20,7 @@ namespace WindowsFormsApp1
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             //Application.Run(new Form1());
-            Application.Run(new FormPruebaDibujo());
+            Application.Run(new MenuPrincipal());
         }
     }
 }
