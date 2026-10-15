@@ -20,6 +20,8 @@ public partial class GraphEditorForm : Form
     private Grafo Grafo;
     private Nodo? SelectedNodo = null;
 
+    private bool IsDragging = false;
+
     private Point offsetArrastre;
 
     public GraphEditorForm()
@@ -71,6 +73,14 @@ public partial class GraphEditorForm : Form
     private void Pnl_graph_Paint(object sender, PaintEventArgs e)
     {
         Grafo?.Draw(e.Graphics);
+
+        if (SelectedNodo != null)
+        {
+            using (Pen pen = new Pen(Color.Red, 3))
+            {
+                e.Graphics.DrawEllipse(pen, SelectedNodo.Posicion.X - SelectedNodo.Radio, SelectedNodo.Posicion.Y - SelectedNodo.Radio, SelectedNodo.Radio * 2, SelectedNodo.Radio * 2);
+            }
+        }
     }
 
     private void Pnl_graph_MouseDown(object sender, MouseEventArgs e)   //Click en el panel
@@ -83,24 +93,27 @@ public partial class GraphEditorForm : Form
                 {
                     SelectedNodo = nodo;
                     offsetArrastre = new Point(e.X - nodo.Posicion.X, e.Y - nodo.Posicion.Y);
-                    break;
+                    IsDragging = true;
+                    return;
                 }
             }
+
+            SelectedNodo = null;
         }
     }
 
     private void Pnl_graph_MouseUp(object sender, MouseEventArgs e)     //Mover el mouse en el panel
     {
-        if (e.Button == MouseButtons.Left && SelectedNodo != null)
+        if (e.Button == MouseButtons.Left)
         {
-            SelectedNodo = null;
-            
+            //SelectedNodo = null;
+            IsDragging = false;
         }
     }
 
     private void Pnl_graph_MouseMove(object sender, MouseEventArgs e)   //Soltar el click en el panel
     {
-        if (SelectedNodo != null)
+        if (SelectedNodo != null && IsDragging)
         {
             int nX = e.X - offsetArrastre.X;
             int nY = e.Y - offsetArrastre.Y;
@@ -113,6 +126,24 @@ public partial class GraphEditorForm : Form
 
             SelectedNodo.Posicion = new Point(nX, nY);
             Pnl_graph.Invalidate();
+        }
+    }
+
+    private void Pnl_graph_MouseClick(object sender, MouseEventArgs e)
+    {
+        Pnl_graph.Invalidate();
+        if (e.Button == MouseButtons.Left)
+        {
+            foreach (Nodo nodo in Grafo.Nodos)
+            {
+                if (nodo.IsInside(e.Location))
+                {
+                    SelectedNodo = nodo;
+                    
+                    return;
+                }
+            }
+            SelectedNodo = null;
         }
     }
 }

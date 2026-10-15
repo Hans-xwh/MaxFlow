@@ -42,6 +42,7 @@
             this.Pnl_graph.Size = new System.Drawing.Size(1122, 511);
             this.Pnl_graph.TabIndex = 0;
             this.Pnl_graph.Paint += new System.Windows.Forms.PaintEventHandler(this.Pnl_graph_Paint);
+            this.Pnl_graph.MouseClick += new System.Windows.Forms.MouseEventHandler(this.Pnl_graph_MouseClick);
             this.Pnl_graph.MouseDown += new System.Windows.Forms.MouseEventHandler(this.Pnl_graph_MouseDown);
             this.Pnl_graph.MouseMove += new System.Windows.Forms.MouseEventHandler(this.Pnl_graph_MouseMove);
             this.Pnl_graph.MouseUp += new System.Windows.Forms.MouseEventHandler(this.Pnl_graph_MouseUp);

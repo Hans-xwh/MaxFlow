@@ -18,7 +18,7 @@ public class Nodo
     public string Nombre { get; set; } //Nombre del nodo    (Recomendado usar una letra)
     public Point Posicion { get; set; } //Posicion en que se dibuja
 
-    private int Radio = 20; //Radio en pixeles
+    public int Radio { get; private set; } = 20; //Radio en pixeles
 
     public Nodo(int id, string nombre, Point posicion)
     {
