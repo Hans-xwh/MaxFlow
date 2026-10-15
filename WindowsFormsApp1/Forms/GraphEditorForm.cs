@@ -16,6 +16,10 @@ public partial class GraphEditorForm : Form
     public GraphEditorForm()
     {
         InitializeComponent();
+        using (SelectorForm selector = new SelectorForm())
+        {
+            selector.ShowDialog();
+        }
     }
 }
 
