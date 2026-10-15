@@ -15,10 +15,12 @@ using MaxFlow.Model;
 
 namespace MaxFlow.Forms;
 
+
+
 public partial class GraphEditorForm : Form
 {
     private Grafo Grafo;
-    private Nodo? SelectedNodo = null;
+    private Nodo? SelNode = null;
 
     private bool IsDragging = false;
 
@@ -64,8 +66,17 @@ public partial class GraphEditorForm : Form
 
     private void Btn_new_node_Click(object sender, EventArgs e)
     {
-        Nodo newNodo = new(50, "B", new Point(100, 100));
-        Grafo?.Nodos.Add(newNodo);
+        if (SelNode == null)
+        {
+            String newName = txb_name.Text != "" ? txb_name.Text : "N"; 
+            Nodo newNodo = new(50, newName, new Point(100, 100));
+            Grafo?.Nodos.Add(newNodo);
+            SelNode = newNodo;
+        }
+        else
+        {
+            SelNode.Nombre = txb_name.Text;
+        }
         this.Pnl_graph.Invalidate();
     }
 
@@ -74,12 +85,23 @@ public partial class GraphEditorForm : Form
     {
         Grafo?.Draw(e.Graphics);
 
-        if (SelectedNodo != null)
+        if (SelNode != null)
         {
             using (Pen pen = new Pen(Color.Red, 3))
             {
-                e.Graphics.DrawEllipse(pen, SelectedNodo.Posicion.X - SelectedNodo.Radio, SelectedNodo.Posicion.Y - SelectedNodo.Radio, SelectedNodo.Radio * 2, SelectedNodo.Radio * 2);
+                e.Graphics.DrawEllipse(pen, SelNode.Posicion.X - SelNode.Radio, SelNode.Posicion.Y - SelNode.Radio, SelNode.Radio * 2, SelNode.Radio * 2);
             }
+
+            //Update UI
+            lbl_pos.Text = $"X: {SelNode.Posicion.X}  Y: {SelNode.Posicion.Y}";
+            txb_name.Text = SelNode.Nombre;
+            Btn_new_node.Text = "Aplicar";
+        }
+        else
+        {
+            //Update UI
+            lbl_pos.Text = $"X: ___  Y: ___";
+            Btn_new_node.Text = "Nuevo Nodo";
         }
     }
 
@@ -91,14 +113,14 @@ public partial class GraphEditorForm : Form
             {
                 if (nodo.IsInside(e.Location))
                 {
-                    SelectedNodo = nodo;
+                    SelNode = nodo;
                     offsetArrastre = new Point(e.X - nodo.Posicion.X, e.Y - nodo.Posicion.Y);
                     IsDragging = true;
                     return;
                 }
             }
 
-            SelectedNodo = null;
+            SelNode = null;
         }
     }
 
@@ -106,14 +128,14 @@ public partial class GraphEditorForm : Form
     {
         if (e.Button == MouseButtons.Left)
         {
-            //SelectedNodo = null;
+            //SelNode = null;
             IsDragging = false;
         }
     }
 
     private void Pnl_graph_MouseMove(object sender, MouseEventArgs e)   //Soltar el click en el panel
     {
-        if (SelectedNodo != null && IsDragging)
+        if (SelNode != null && IsDragging)
         {
             int nX = e.X - offsetArrastre.X;
             int nY = e.Y - offsetArrastre.Y;
@@ -124,7 +146,10 @@ public partial class GraphEditorForm : Form
                 nY = (int)Math.Round(nY / 10.0) * 10;
             }
 
-            SelectedNodo.Posicion = new Point(nX, nY);
+            nX = Math.Max(30, Math.Min(nX, Pnl_graph.Size.Width - 30));
+            nY = Math.Max(30, Math.Min(nY, Pnl_graph.Size.Height - 30));
+
+            SelNode.Posicion = new Point(nX, nY);
             Pnl_graph.Invalidate();
         }
     }
@@ -138,13 +163,26 @@ public partial class GraphEditorForm : Form
             {
                 if (nodo.IsInside(e.Location))
                 {
-                    SelectedNodo = nodo;
+                    SelNode = nodo;
                     
                     return;
                 }
             }
-            SelectedNodo = null;
+            SelNode = null;
+            txb_name.Text = "";
         }
+    }
+
+    // Keys //
+    private void GraphEditorForm_KeyDown(object sender, KeyEventArgs e)
+    {
+        if(SelNode != null && e.KeyCode == Keys.Delete)
+        {
+            Grafo.PopNode(SelNode.Id);
+        }
+
+        SelNode = null;
+        Pnl_graph.Invalidate();
     }
 }
 

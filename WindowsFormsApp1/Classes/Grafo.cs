@@ -354,4 +354,20 @@ public class Grafo
         return false;
     }
 
+    //public void AddNode()
+    //{
+    //
+    //}
+
+    public void PopNode(int nid)
+    {
+        Nodo? n = Nodos.FirstOrDefault(x => x.Id == nid);   //C# es lo mas hermoso del mundo xd
+
+        if(n != null)
+        {
+            Aristas.RemoveAll(a => a.Origen == n || a.Destino == n);
+
+            Nodos.Remove(n);
+        }
+    }
 }
