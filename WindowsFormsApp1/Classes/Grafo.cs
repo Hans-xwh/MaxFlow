@@ -44,6 +44,14 @@ public class Nodo
         SizeF textSize = g.MeasureString(Nombre, font); //Cajita autotamaño para el texto
         g.DrawString(Nombre, font, Btexto, Posicion.X - textSize.Width / 2, Posicion.Y - textSize.Height / 2);
     }
+
+    //Utils
+    internal bool IsInside(Point p)
+    {
+        double dx = p.X - Posicion.X;
+        double dy = p.Y - Posicion.Y;
+        return (dx * dx + dy * dy) <= (Radio * Radio);  
+    }
 }
 
 public class Arista
@@ -132,7 +140,7 @@ public class Grafo
         }
     }
 
-    private bool LoadFromFile(string filePath)
+    public bool LoadFromFile(string filePath)
     {
         // Nodos: Id,Nombre,X,Y
         // Aristas: Id,OrigenId,DestinoId,Capacidad,Flujo

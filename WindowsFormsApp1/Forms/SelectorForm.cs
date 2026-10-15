@@ -33,6 +33,7 @@ public partial class SelectorForm : Form
         if (lst_files.SelectedItem != null)
         {
             SelectedGraph = new Grafo(ruta);
+            //SelectedGraph.LoadFromFile(ruta);
             this.DialogResult = DialogResult.OK;
             this.Close();
         }
