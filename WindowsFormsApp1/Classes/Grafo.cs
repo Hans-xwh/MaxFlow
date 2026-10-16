@@ -6,8 +6,6 @@ using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace MaxFlow.Model;
 
@@ -128,31 +126,40 @@ public class Grafo
         Negro   //Visitado
     }
 
+    public String FilePath { get; set; } = "";
+
     public List<Nodo> Nodos { get; private set; } = new List<Nodo>();
     public List<Arista> Aristas { get; private set; } = new List<Arista>();
 
-    public Grafo(string? filePath=null) //Si no se pasa ningun parametro, se crea un grafo en blanco
+    public Grafo(string? filePath = null) //Si no se pasa ningun parametro, se crea un grafo en blanco
     {
-        string RutaPorDefecto = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "grafo.csv");
-        if (filePath != null && File.Exists(filePath))
+        if (filePath == null || filePath == "")
         {
-            LoadFromFile(filePath);
+            FilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "grafo.csv");
         }
-        else if (filePath != null)
+        else
         {
-            LoadFromFile(RutaPorDefecto); //Intentar cargar el grafo por defecto
+            FilePath = filePath;
         }
+        LoadFromFile(FilePath);
     }
 
-    public bool LoadFromFile(string filePath)
+    public Grafo()
     {
+
+    }
+
+    public bool LoadFromFile(string? filePath)
+    {
+        FilePath = filePath ?? FilePath;
+
         // Nodos: Id,Nombre,X,Y
         // Aristas: Id,OrigenId,DestinoId,Capacidad,Flujo
 
-        if (!File.Exists(filePath))
+        if (!File.Exists(FilePath))
         {
             GenDefault();
-            SaveToFile(filePath);
+            SaveToFile(FilePath);
 
             return false;   //Retorna false en caso se haya tenido que generar el grafo por defecto.
         }
@@ -163,7 +170,7 @@ public class Grafo
         //Reading code stolen from MakeAuth3d_DB :P    
         string mode = "[NODOS]";
 
-        using StreamReader reader = new(filePath);
+        using StreamReader reader = new(FilePath);
         string? line;
         while ((line = reader.ReadLine()) != null)
         {
@@ -174,7 +181,8 @@ public class Grafo
             //Split
             string[] parts = line.Split(',');
 
-            if (parts.Length == 1) {
+            if (parts.Length == 1)
+            {
                 mode = parts[0].ToUpper();
                 continue;
             }
@@ -214,10 +222,11 @@ public class Grafo
 
     public bool SaveToFile(string filePath)
     {
+
         // Nodos: Id,Nombre,X,Y
         // Aristas: Id,OrigenId,DestinoId,Capacidad,Flujo
 
-        using StreamWriter writer = new(filePath, append:false);    //C# es divertido xd
+        using StreamWriter writer = new(filePath, append: false);    //C# es divertido xd
 
         // Escribir Nodos //
         writer.WriteLine("[NODOS]");
@@ -235,15 +244,15 @@ public class Grafo
         {
             writer.WriteLine($"{arista.Id},{arista.Origen.Id},{arista.Destino.Id},{arista.Capacidad},{arista.Flujo}");
         }
-            return true;
+        return true;
     }
 
-    public bool CheckLoops(bool fix=false)
+    public bool CheckLoops(bool fix = false)
     {
         Dictionary<int, EstadoNodo> estados = Nodos.ToDictionary(n => n.Id, n => EstadoNodo.Blanco);
 
         //Iterar nodos
-        foreach(Nodo nodo in Nodos)
+        foreach (Nodo nodo in Nodos)
         {
             if (estados[nodo.Id] == EstadoNodo.Blanco)
             {
@@ -272,16 +281,16 @@ public class Grafo
         this.Nodos.AddRange(new[] { n1, n2, n3, n4, n5, n6, n7, n8 });
 
         //Crear Aristas con capacidades arbitrarias
-        this.Aristas.Add(new Arista(n1, n2, 10, id:1));
-        this.Aristas.Add(new Arista(n1, n3, 8, id:2));
-        this.Aristas.Add(new Arista(n2, n4, 5, id:3));
-        this.Aristas.Add(new Arista(n2, n5, 7, id:4));
-        this.Aristas.Add(new Arista(n3, n5, 10, id:5));
-        this.Aristas.Add(new Arista(n4, n6, 8, id:6));
-        this.Aristas.Add(new Arista(n5, n4, 4, id:7));
-        this.Aristas.Add(new Arista(n5, n7, 9, id:8));
-        this.Aristas.Add(new Arista(n6, n8, 12, id:9));
-        this.Aristas.Add(new Arista(n7, n8, 10, id:10));
+        this.Aristas.Add(new Arista(n1, n2, 10, id: 1));
+        this.Aristas.Add(new Arista(n1, n3, 8, id: 2));
+        this.Aristas.Add(new Arista(n2, n4, 5, id: 3));
+        this.Aristas.Add(new Arista(n2, n5, 7, id: 4));
+        this.Aristas.Add(new Arista(n3, n5, 10, id: 5));
+        this.Aristas.Add(new Arista(n4, n6, 8, id: 6));
+        this.Aristas.Add(new Arista(n5, n4, 4, id: 7));
+        this.Aristas.Add(new Arista(n5, n7, 9, id: 8));
+        this.Aristas.Add(new Arista(n6, n8, 12, id: 9));
+        this.Aristas.Add(new Arista(n7, n8, 10, id: 10));
     }
 
     public void GenRandom(int numNodos)
@@ -329,7 +338,7 @@ public class Grafo
         //Lista de aristas salientes al nodo actual
         List<Arista> salientes = Aristas.Where(a => a.Origen.Id == nodo.Id).ToList();
 
-        foreach(Arista arista in salientes)
+        foreach (Arista arista in salientes)
         {
             Nodo vecino = arista.Destino;
 
@@ -358,20 +367,58 @@ public class Grafo
         return false;
     }
 
-    //public void AddNode()
-    //{
-    //
-    //}
+    public Nodo AddNode(string name, Point p)
+    {
+        int id = Nodos.Count() + 1;
+        Nodo newNodo = new(id, name, p);
+
+        Nodos.Add(newNodo);
+        (Nodos[id - 2], Nodos[id - 1]) = (Nodos[id - 1], Nodos[id - 2]);
+        return newNodo;
+    }
 
     public void PopNode(int nid)
     {
         Nodo? n = Nodos.FirstOrDefault(x => x.Id == nid);   //C# es lo mas hermoso del mundo xd
 
-        if(n != null)
+        if (n != null)
         {
             Aristas.RemoveAll(a => a.Origen == n || a.Destino == n);
 
             Nodos.Remove(n);
+        }
+    }
+
+    public void AutoSort(Nodo? f = null, Nodo? s = null)
+    {
+        if (Nodos.Count <= 1) return;
+
+        Nodo fuente = f ?? Nodos.First();
+        Nodo sumidero = s ?? Nodos.Last();
+
+        //Caso sumidero = fuente
+        if (fuente == sumidero && Nodos.Count > 1)
+        {
+            sumidero = Nodos.Last();
+        }
+
+        List<Nodo> tmpNodos = Nodos.Where(n => n != fuente && n != sumidero).ToList();
+
+        //Reconstruir
+        Nodos.Clear();
+        Nodos.Add(fuente);
+        Nodos.AddRange(tmpNodos);
+        Nodos.Add(sumidero);
+
+        //IDs
+        for (int i = 0; i < Nodos.Count; i++)
+        {
+            Nodos[i].Id = i + 1;
+        }
+
+        for (int i = 0; i < Aristas.Count; i++)
+        {
+            Aristas[i].Id = i + 1;
         }
     }
 }

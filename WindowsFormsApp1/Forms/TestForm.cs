@@ -36,8 +36,8 @@ namespace MaxFlow.Forms
             grafoPrueba = new Grafo("");    //String vacio carga el archivo por defecto
 
             // Buscar fuente y sumidero
-            Nodo? fuente = grafoPrueba.Nodos.Find(n => n.Nombre == "S");
-            Nodo? sumidero = grafoPrueba.Nodos.Find(n => n.Nombre == "T");
+            Nodo? fuente = grafoPrueba.Nodos.First();
+            Nodo? sumidero = grafoPrueba.Nodos.Last();
 
             // Crear el algoritmo de Ford-Fulkerson
             if (fuente != null && sumidero != null)

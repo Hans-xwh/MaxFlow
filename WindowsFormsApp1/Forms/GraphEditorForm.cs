@@ -59,6 +59,9 @@ public partial class GraphEditorForm : Form
             }
         }
 
+        updateAristas();
+        UpdateGrafoUI();
+
         this.Show();
     }
 
@@ -69,15 +72,16 @@ public partial class GraphEditorForm : Form
         if (SelNode == null)
         {
             String newName = txb_name.Text != "" ? txb_name.Text : "N"; 
-            Nodo newNodo = new(50, newName, new Point(100, 100));
-            Grafo?.Nodos.Add(newNodo);
-            SelNode = newNodo;
+            
+            //Grafo?.Nodos.Add(newNodo);
+            SelNode = Grafo.AddNode(newName, new Point(100, 100));
         }
         else
         {
             SelNode.Nombre = txb_name.Text;
         }
         UpdateComboAristas();
+        UpdateGrafoUI();
         this.Pnl_graph.Invalidate();
     }
 
@@ -99,9 +103,49 @@ public partial class GraphEditorForm : Form
         {
             Grafo.Aristas.Remove(arista);
             UpdateComboAristas();
+            UpdateGrafoUI();
             Pnl_graph.Invalidate();
         }
     }
+
+    private void btn_save_Click(object sender, EventArgs e)
+    {
+        Grafo.AutoSort();
+        Grafo.SaveToFile(Grafo.FilePath);
+    }
+
+    private void btn_revert_Click(object sender, EventArgs e)
+    {
+        Grafo.LoadFromFile(Grafo.FilePath);
+        SelNode = null;
+        updateAristas();
+        UpdateGrafoUI();
+
+        Pnl_graph.Invalidate();
+        Pnl_toolbox.Invalidate();
+    }
+
+    private void btn_organize_Click(object sender, EventArgs e)
+    {
+        Grafo.AutoSort();
+    }
+
+    private void btn_uncycle_Click(object sender, EventArgs e)
+    {
+        bool result = Grafo.CheckLoops(true);
+
+        MessageBox.Show(result
+            ? "Se han eliminado los ciclos."
+            : "El grafo ya era acílico!"
+            );  //Ugliest shi ive written
+
+        updateAristas();
+        UpdateGrafoUI();
+
+        Pnl_graph.Invalidate();
+    }
+
+    
 
     // Panel Grafo //
     private void Pnl_graph_Paint(object sender, PaintEventArgs e)
@@ -166,6 +210,7 @@ public partial class GraphEditorForm : Form
                     Arista newArista = new(SelNode, hitNode, 1, 0, newId);
                     Grafo.Aristas.Add(newArista);
                     UpdateComboAristas();
+                    UpdateGrafoUI();
                     Cmb_aristas.SelectedItem = newArista;
                 }
                 //SelNode = null;
@@ -238,6 +283,7 @@ public partial class GraphEditorForm : Form
             Grafo.PopNode(SelNode.Id);
             SelNode = null;
             UpdateComboAristas();
+            UpdateGrafoUI();
             Pnl_graph.Invalidate();
         }     
     }
@@ -296,6 +342,54 @@ public partial class GraphEditorForm : Form
     private void Cmb_aristas_SelectedIndexChanged(object sender, EventArgs e)
     {
         updateAristas();
+    }
+
+    // Panel Grafo //
+    private void UpdateGrafoUI()
+    {
+        //Contadores
+        Lbl_cant_nodos.Text = Grafo.Nodos.Count.ToString();
+        Lbl_cant_aristas.Text = Grafo.Aristas.Count.ToString();
+
+        Cmb_fuente.DataSource = null;
+        Cmb_fuente.DataSource = Grafo.Nodos.ToList();
+        Cmb_fuente.DisplayMember = "Nombre";
+
+        Cmb_sumidero.DataSource = null;
+        Cmb_sumidero.DataSource = Grafo.Nodos.ToList();
+        Cmb_sumidero.DisplayMember = "Nombre";
+
+        //Restaurar seleccion
+        Cmb_fuente.SelectedItem = Grafo.Nodos.First();
+        Cmb_sumidero.SelectedItem = Grafo.Nodos.Last();
+    }
+
+    private void Cmb_fuente_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        if (Cmb_fuente.SelectedItem is Nodo)
+        {
+            Nodo? newFuente = Cmb_fuente.SelectedItem as Nodo;
+
+            if (newFuente != Grafo.Nodos.Last())
+            {
+                Grafo.AutoSort(f: newFuente);
+            }
+            UpdateGrafoUI();
+        }
+    }
+
+    private void Cmb_sumidero_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        if (Cmb_sumidero.SelectedItem is Nodo)
+        {
+            Nodo? newSumidero = Cmb_sumidero.SelectedItem as Nodo;
+
+            if (newSumidero != Grafo.Nodos.First())
+            {
+                Grafo.AutoSort(s: newSumidero);
+            }
+            UpdateGrafoUI();
+        }
     }
 }
 
