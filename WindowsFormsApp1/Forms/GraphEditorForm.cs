@@ -128,6 +128,22 @@ public partial class GraphEditorForm : Form
     private void btn_organize_Click(object sender, EventArgs e)
     {
         Grafo.AutoSort();
+
+        foreach (Nodo n in Grafo.Nodos)
+        {
+            int nX = n.Posicion.X;
+            int nY = n.Posicion.Y;
+
+            nX = (int)Math.Round(nX / 10.0) * 10;
+            nY = (int)Math.Round(nY / 10.0) * 10;
+
+            nX = Math.Max(30, Math.Min(nX, Pnl_graph.Size.Width - 30));
+            nY = Math.Max(30, Math.Min(nY, Pnl_graph.Size.Height - 30));
+
+            n.Posicion = new Point(nX, nY);
+        }
+
+        Pnl_graph.Invalidate();
     }
 
     private void btn_uncycle_Click(object sender, EventArgs e)
