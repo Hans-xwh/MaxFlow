@@ -347,6 +347,11 @@ public partial class GraphEditorForm : Form
     // Panel Grafo //
     private void UpdateGrafoUI()
     {
+        if (Grafo == null || Grafo.Nodos.Count <= 0)
+        {
+            return;
+        }
+
         //Contadores
         Lbl_cant_nodos.Text = Grafo.Nodos.Count.ToString();
         Lbl_cant_aristas.Text = Grafo.Aristas.Count.ToString();

@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics.Tracing;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -32,7 +33,12 @@ public partial class SelectorForm : Form
     {
         if (lst_files.SelectedItem != null)
         {
-            SelectedGraph = new Grafo(ruta);
+            //if (!File.Exists(ruta))
+            //{
+            //    File.CreateText(ruta);
+            //}
+
+            SelectedGraph = new Grafo(ruta, true);
             //SelectedGraph.LoadFromFile(ruta);
             this.DialogResult = DialogResult.OK;
             this.Close();
@@ -51,6 +57,7 @@ public partial class SelectorForm : Form
         using (OpenFileDialog openFileDialog = new OpenFileDialog())
         {
             openFileDialog.Filter = "Archivos CSV (*.csv)|*.csv";
+            openFileDialog.Title = "Cargar grafo desde CSV";
             openFileDialog.InitialDirectory = AppDomain.CurrentDomain.BaseDirectory;
             if (openFileDialog.ShowDialog() == DialogResult.OK)
             {
@@ -62,6 +69,22 @@ public partial class SelectorForm : Form
     private void SelectorForm_Load(object sender, EventArgs e)
     {
 
+    }
+
+    private void Btn_new_graph_Click(object sender, EventArgs e)
+    {
+        using (SaveFileDialog saveFileDialog = new SaveFileDialog())
+        {
+            saveFileDialog.Filter = "Archivos CSV (*.csv)|*.csv";
+            saveFileDialog.Title = "Crear grafo y guardar en CSV";
+            saveFileDialog.InitialDirectory = AppDomain.CurrentDomain.BaseDirectory;
+            saveFileDialog.FileName = "Nuevo Grafo.csv";
+
+            if (saveFileDialog.ShowDialog() == DialogResult.OK)
+            {
+                CargarGrafo(saveFileDialog.FileName);
+            }
+        }
     }
 }
 

@@ -34,6 +34,7 @@
             this.numericUpDown1 = new System.Windows.Forms.NumericUpDown();
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
+            this.Btn_new_graph = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).BeginInit();
             this.SuspendLayout();
             // 
@@ -48,7 +49,7 @@
             // 
             // btn_random
             // 
-            this.btn_random.Location = new System.Drawing.Point(332, 118);
+            this.btn_random.Location = new System.Drawing.Point(332, 73);
             this.btn_random.Name = "btn_random";
             this.btn_random.Size = new System.Drawing.Size(129, 59);
             this.btn_random.TabIndex = 1;
@@ -57,7 +58,7 @@
             // 
             // btn_examinar
             // 
-            this.btn_examinar.Location = new System.Drawing.Point(207, 230);
+            this.btn_examinar.Location = new System.Drawing.Point(207, 187);
             this.btn_examinar.Name = "btn_examinar";
             this.btn_examinar.Size = new System.Drawing.Size(254, 51);
             this.btn_examinar.TabIndex = 1;
@@ -67,7 +68,7 @@
             // 
             // numericUpDown1
             // 
-            this.numericUpDown1.Location = new System.Drawing.Point(213, 150);
+            this.numericUpDown1.Location = new System.Drawing.Point(213, 105);
             this.numericUpDown1.Maximum = new decimal(new int[] {
             16,
             0,
@@ -90,7 +91,7 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(214, 118);
+            this.label1.Location = new System.Drawing.Point(214, 73);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(99, 13);
             this.label1.TabIndex = 4;
@@ -105,11 +106,22 @@
             this.label2.Text = "Cargar desde un archivo";
             this.label2.TextAlign = System.Drawing.ContentAlignment.TopCenter;
             // 
+            // Btn_new_graph
+            // 
+            this.Btn_new_graph.Location = new System.Drawing.Point(207, 269);
+            this.Btn_new_graph.Name = "Btn_new_graph";
+            this.Btn_new_graph.Size = new System.Drawing.Size(254, 51);
+            this.Btn_new_graph.TabIndex = 6;
+            this.Btn_new_graph.Text = "Crea Nuevo Grafo";
+            this.Btn_new_graph.UseVisualStyleBackColor = true;
+            this.Btn_new_graph.Click += new System.EventHandler(this.Btn_new_graph_Click);
+            // 
             // SelectorForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(473, 376);
+            this.Controls.Add(this.Btn_new_graph);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.numericUpDown1);
@@ -133,5 +145,6 @@
         private System.Windows.Forms.NumericUpDown numericUpDown1;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.Button Btn_new_graph;
     }
 }

@@ -131,7 +131,7 @@ public class Grafo
     public List<Nodo> Nodos { get; private set; } = new List<Nodo>();
     public List<Arista> Aristas { get; private set; } = new List<Arista>();
 
-    public Grafo(string? filePath = null) //Si no se pasa ningun parametro, se crea un grafo en blanco
+    public Grafo(string? filePath = null, bool generate_blank=false) //Si no se pasa ningun parametro, se crea un grafo en blanco
     {
         if (filePath == null || filePath == "")
         {
@@ -141,7 +141,7 @@ public class Grafo
         {
             FilePath = filePath;
         }
-        LoadFromFile(FilePath);
+        LoadFromFile(FilePath, generate_blank);
     }
 
     public Grafo()
@@ -149,7 +149,7 @@ public class Grafo
 
     }
 
-    public bool LoadFromFile(string? filePath)
+    public bool LoadFromFile(string? filePath, bool generate_blank=false)
     {
         FilePath = filePath ?? FilePath;
 
@@ -158,7 +158,7 @@ public class Grafo
 
         if (!File.Exists(FilePath))
         {
-            GenDefault();
+            if (!generate_blank) { GenDefault(); }
             SaveToFile(FilePath);
 
             return false;   //Retorna false en caso se haya tenido que generar el grafo por defecto.
@@ -371,9 +371,12 @@ public class Grafo
     {
         int id = Nodos.Count() + 1;
         Nodo newNodo = new(id, name, p);
-
         Nodos.Add(newNodo);
-        (Nodos[id - 2], Nodos[id - 1]) = (Nodos[id - 1], Nodos[id - 2]);
+
+        if (Nodos.Count >= 2)
+        {
+            (Nodos[id - 2], Nodos[id - 1]) = (Nodos[id - 1], Nodos[id - 2]);
+        }
         return newNodo;
     }
 
