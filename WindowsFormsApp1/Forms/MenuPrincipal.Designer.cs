@@ -33,6 +33,7 @@
             this.btn_graph = new System.Windows.Forms.Button();
             this.btn_credits = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
+            this.Btn_dijkstra = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // btn_prueba
@@ -84,11 +85,22 @@
             this.label1.Text = "Max Flow";
             this.label1.TextAlign = System.Drawing.ContentAlignment.TopCenter;
             // 
+            // Btn_dijkstra
+            // 
+            this.Btn_dijkstra.Location = new System.Drawing.Point(40, 399);
+            this.Btn_dijkstra.Name = "Btn_dijkstra";
+            this.Btn_dijkstra.Size = new System.Drawing.Size(93, 30);
+            this.Btn_dijkstra.TabIndex = 3;
+            this.Btn_dijkstra.Text = "Bonus: Dijkstra";
+            this.Btn_dijkstra.UseVisualStyleBackColor = true;
+            this.Btn_dijkstra.Click += new System.EventHandler(this.Btn_dijkstra_Click);
+            // 
             // MenuPrincipal
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.Btn_dijkstra);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.btn_graph);
             this.Controls.Add(this.btn_credits);
@@ -107,5 +119,6 @@
         private System.Windows.Forms.Button btn_graph;
         private System.Windows.Forms.Button btn_credits;
         private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Button Btn_dijkstra;
     }
 }

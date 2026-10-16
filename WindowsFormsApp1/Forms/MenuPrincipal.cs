@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
+using WindowsFormsApp1.Forms.Extra;
 using MaxFlow.Forms;
 
 namespace WindowsFormsApp1.Forms
@@ -46,6 +47,16 @@ namespace WindowsFormsApp1.Forms
             using (Creditos creditosForm = new Creditos())
             {
                 creditosForm.ShowDialog();
+            }
+            this.Show();
+        }
+
+        private void Btn_dijkstra_Click(object sender, EventArgs e)
+        {
+            this.Hide();
+            using (DijkstraForm dijkstraForm = new())
+            {
+                dijkstraForm.ShowDialog();
             }
             this.Show();
         }
