@@ -122,6 +122,29 @@ public partial class GraphEditorForm : Form
 
             SelNode = null;
         }
+        else if (e.Button == MouseButtons.Right)
+        {
+            Nodo? hitNode = Grafo.Nodos.Find(n => n.IsInside(e.Location));
+
+            if (SelNode == null)
+            {
+                if (hitNode != null)
+                {
+                    //OrgNode = hitNode;
+                    SelNode = hitNode;
+                }
+            }
+            else
+            {
+                if (hitNode != null && hitNode != SelNode)
+                {
+                    int newId = Grafo.Aristas.Count + 1;
+                    Grafo.Aristas.Add(new Arista(SelNode, hitNode, 1, 0, newId));
+                }
+                SelNode = null;
+            }
+            Pnl_graph.Invalidate();
+        }
     }
 
     private void Pnl_graph_MouseUp(object sender, MouseEventArgs e)     //Mover el mouse en el panel
@@ -152,6 +175,10 @@ public partial class GraphEditorForm : Form
             SelNode.Posicion = new Point(nX, nY);
             Pnl_graph.Invalidate();
         }
+        else if (SelNode != null)
+        {
+            this.Invalidate();
+        }
     }
 
     private void Pnl_graph_MouseClick(object sender, MouseEventArgs e)
@@ -179,10 +206,9 @@ public partial class GraphEditorForm : Form
         if(SelNode != null && e.KeyCode == Keys.Delete)
         {
             Grafo.PopNode(SelNode.Id);
-        }
-
-        SelNode = null;
-        Pnl_graph.Invalidate();
+            SelNode = null;
+            Pnl_graph.Invalidate();
+        }     
     }
 }
 
