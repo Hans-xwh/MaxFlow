@@ -77,7 +77,30 @@ public partial class GraphEditorForm : Form
         {
             SelNode.Nombre = txb_name.Text;
         }
+        UpdateComboAristas();
         this.Pnl_graph.Invalidate();
+    }
+
+    private void Btn_arista_aplicar_Click(object sender, EventArgs e)
+    {
+        if (Cmb_aristas.SelectedItem is Arista arista)
+        {
+            arista.Capacidad = (int)Num_capacidad.Value;
+            arista.Flujo = Math.Min(arista.Capacidad, (int)Num_flujo.Value);
+
+            UpdateComboAristas();
+            Pnl_graph.Invalidate(); //Esto se puso feo muy rapido xd
+        }
+    }
+
+    private void Btn_arista_del_Click(object sender, EventArgs e)
+    {
+        if (Cmb_aristas.SelectedItem is Arista arista)
+        {
+            Grafo.Aristas.Remove(arista);
+            UpdateComboAristas();
+            Pnl_graph.Invalidate();
+        }
     }
 
     // Panel Grafo //
@@ -116,6 +139,7 @@ public partial class GraphEditorForm : Form
                     SelNode = nodo;
                     offsetArrastre = new Point(e.X - nodo.Posicion.X, e.Y - nodo.Posicion.Y);
                     IsDragging = true;
+                    UpdateComboAristas();
                     return;
                 }
             }
@@ -139,12 +163,17 @@ public partial class GraphEditorForm : Form
                 if (hitNode != null && hitNode != SelNode)
                 {
                     int newId = Grafo.Aristas.Count + 1;
-                    Grafo.Aristas.Add(new Arista(SelNode, hitNode, 1, 0, newId));
+                    Arista newArista = new(SelNode, hitNode, 1, 0, newId);
+                    Grafo.Aristas.Add(newArista);
+                    UpdateComboAristas();
+                    Cmb_aristas.SelectedItem = newArista;
                 }
-                SelNode = null;
+                //SelNode = null;
             }
+            //UpdateComboAristas();
             Pnl_graph.Invalidate();
         }
+        
     }
 
     private void Pnl_graph_MouseUp(object sender, MouseEventArgs e)     //Mover el mouse en el panel
@@ -196,6 +225,7 @@ public partial class GraphEditorForm : Form
                 }
             }
             SelNode = null;
+            UpdateComboAristas();
             txb_name.Text = "";
         }
     }
@@ -207,8 +237,65 @@ public partial class GraphEditorForm : Form
         {
             Grafo.PopNode(SelNode.Id);
             SelNode = null;
+            UpdateComboAristas();
             Pnl_graph.Invalidate();
         }     
+    }
+
+    // Aristas //
+    private void UpdateComboAristas()
+    {
+        Arista? aristaPrevia = Cmb_aristas.SelectedItem as Arista;
+        List<Arista> listaAristas;
+
+        if (Chk_showAll.Checked)
+        {
+            listaAristas = Grafo.Aristas.ToList();
+        }
+        else if (SelNode != null)
+        {
+            listaAristas = Grafo.Aristas.Where(a => a.Origen.Id == SelNode.Id || a.Destino.Id == SelNode.Id).ToList();
+        }
+        else
+        {
+            listaAristas = new List<Arista>();
+        }
+
+        Cmb_aristas.DataSource = null; //Importante limpiar binding
+        Cmb_aristas.DataSource = listaAristas;
+        Cmb_aristas.DisplayMember = "GetText";
+
+        //Restaurar seleccion
+        if (aristaPrevia != null && listaAristas.Contains(aristaPrevia))
+        {
+            Cmb_aristas.SelectedItem = aristaPrevia;
+        }
+        else if (listaAristas.Count > 0)
+        {
+            Cmb_aristas.SelectedIndex = 0;
+        }
+
+        updateAristas();
+    }
+
+    private void updateAristas()
+    {
+        //Actualizar datos
+        if (Cmb_aristas.SelectedItem is Arista arista)
+        {
+            Num_capacidad.Value = arista.Capacidad;
+            Num_flujo.Value = arista.Flujo;
+        }
+    }
+
+    private void Chk_showAll_CheckedChanged(object sender, EventArgs e)
+    {
+        UpdateComboAristas();
+    }
+
+    private void Cmb_aristas_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        updateAristas();
     }
 }
 

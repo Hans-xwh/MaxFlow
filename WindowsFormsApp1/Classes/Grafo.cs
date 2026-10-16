@@ -113,6 +113,10 @@ public class Arista
         g.DrawString(textoCapacidad, font, Btexto, pMedio.X - (size.Width / 2), pMedio.Y - (size.Height / 2));
     }
 
+    public override String ToString()
+    {
+        return $"{Origen.Nombre} --> {Destino.Nombre}  [{Flujo}/{Capacidad}]";
+    }
 }
 
 public class Grafo
