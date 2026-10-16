@@ -48,7 +48,7 @@
             // 
             // btn_graph_editor
             // 
-            this.btn_graph_editor.Location = new System.Drawing.Point(307, 210);
+            this.btn_graph_editor.Location = new System.Drawing.Point(307, 207);
             this.btn_graph_editor.Name = "btn_graph_editor";
             this.btn_graph_editor.Size = new System.Drawing.Size(193, 53);
             this.btn_graph_editor.TabIndex = 1;
@@ -67,7 +67,7 @@
             // 
             // btn_credits
             // 
-            this.btn_credits.Location = new System.Drawing.Point(307, 282);
+            this.btn_credits.Location = new System.Drawing.Point(307, 340);
             this.btn_credits.Name = "btn_credits";
             this.btn_credits.Size = new System.Drawing.Size(193, 53);
             this.btn_credits.TabIndex = 1;
@@ -87,9 +87,9 @@
             // 
             // Btn_dijkstra
             // 
-            this.Btn_dijkstra.Location = new System.Drawing.Point(40, 399);
+            this.Btn_dijkstra.Location = new System.Drawing.Point(307, 272);
             this.Btn_dijkstra.Name = "Btn_dijkstra";
-            this.Btn_dijkstra.Size = new System.Drawing.Size(93, 30);
+            this.Btn_dijkstra.Size = new System.Drawing.Size(193, 53);
             this.Btn_dijkstra.TabIndex = 3;
             this.Btn_dijkstra.Text = "Bonus: Dijkstra";
             this.Btn_dijkstra.UseVisualStyleBackColor = true;
