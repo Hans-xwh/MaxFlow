@@ -64,6 +64,7 @@
             this.btn_graph.TabIndex = 1;
             this.btn_graph.Text = "Iniciar Ford Fulkerson";
             this.btn_graph.UseVisualStyleBackColor = true;
+            this.btn_graph.Click += new System.EventHandler(this.btn_graph_Click);
             // 
             // btn_credits
             // 

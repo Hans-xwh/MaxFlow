@@ -60,5 +60,15 @@ namespace WindowsFormsApp1.Forms
             }
             this.Show();
         }
+
+        private void btn_graph_Click(object sender, EventArgs e)
+        {
+            this.Hide();
+            using (FordFulkersonForm fulkersonForm = new())
+            {
+                fulkersonForm.ShowDialog();
+            }
+            this.Show();
+        }
     }
 }

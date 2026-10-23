@@ -70,6 +70,12 @@
     <Compile Include="Forms\DijkstraForm.Designer.cs">
       <DependentUpon>DijkstraForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Forms\FordFulkersonForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\FordFulkersonForm.Designer.cs">
+      <DependentUpon>FordFulkersonForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\GraphEditorForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -101,6 +107,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\DijkstraForm.resx">
       <DependentUpon>DijkstraForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\FordFulkersonForm.resx">
+      <DependentUpon>FordFulkersonForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\GraphEditorForm.resx">
       <DependentUpon>GraphEditorForm.cs</DependentUpon>
