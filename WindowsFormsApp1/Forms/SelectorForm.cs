@@ -86,6 +86,25 @@ public partial class SelectorForm : Form
             }
         }
     }
+
+    private void btn_random_Click(object sender, EventArgs e)
+    {
+        // Obtener la cantidad de nodos seleccionada.
+        int numNodos = (int)numericUpDown1.Value;
+
+        // Crear un grafo vacío.
+        Grafo grafo = new Grafo();
+
+        // Generar el grafo aleatorio.
+        grafo.GenRandom(numNodos);
+
+        // Asignar el grafo generado al selector.
+        SelectedGraph = grafo;
+
+        // Indicar que la selección terminó correctamente.
+        this.DialogResult = DialogResult.OK;
+        this.Close();
+    }
 }
 
 

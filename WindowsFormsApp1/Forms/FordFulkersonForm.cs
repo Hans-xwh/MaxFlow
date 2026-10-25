@@ -5,6 +5,7 @@ using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Linq;
+using System.Runtime.InteropServices.ComTypes;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -18,23 +19,47 @@ public partial class FordFulkersonForm : Form
     public FordFulkersonForm()
     {
         InitializeComponent();
+
+        // Permitir dibujar el grafo sin parpadeos.
+        typeof(Panel).InvokeMember(
+            "DoubleBuffered",
+            System.Reflection.BindingFlags.SetProperty |
+            System.Reflection.BindingFlags.Instance |
+            System.Reflection.BindingFlags.NonPublic,
+            null,
+            Pnl_graph,
+            new object[] { true }
+        );
     }
 
     protected override void OnLoad(EventArgs e)
     {
         base.OnLoad(e);
-        this.Hide();
-        using (SelectorForm selector = new())
+
+        Hide();
+
+        using (SelectorForm selector = new SelectorForm())
         {
             selector.ShowDialog();
             Grafo = selector.SelectedGraph;
 
             if (Grafo == null)
             {
-                this.BeginInvoke(new Action(() => this.Close()));   //Ciera el form si el anterior no retorno un grafo
+                Close();
                 return;
             }
         }
-        this.Show();
+
+        // Mostrar el grafo una vez seleccionado.
+        Pnl_graph.Invalidate();
+        Show();
+    }
+
+    private void Pnl_graph_Paint(object sender, PaintEventArgs e)
+    {
+        if (Grafo == null)
+            return;
+
+        Grafo.Draw(e.Graphics);
     }
 }

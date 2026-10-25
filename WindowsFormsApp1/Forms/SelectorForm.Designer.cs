@@ -55,6 +55,7 @@
             this.btn_random.TabIndex = 1;
             this.btn_random.Text = "Generar Aleatorio";
             this.btn_random.UseVisualStyleBackColor = true;
+            this.btn_random.Click += new System.EventHandler(this.btn_random_Click);
             // 
             // btn_examinar
             // 
