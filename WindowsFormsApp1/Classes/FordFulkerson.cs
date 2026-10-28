@@ -8,10 +8,12 @@ using MaxFlow.Model;
 namespace MaxFlow.Fulkerson;
 
 // Representa un movimiento dentro de la red residual
-internal class MovimientoResidual{
+internal class MovimientoResidual
+{
     public Arista Arista { get; set; }
     public bool HaciaAdelante { get; set; }
     public int CapacidadResidual { get; set; }
+    public int FlujoAnterior { get; set; }
 
     public MovimientoResidual(
         Arista arista,
@@ -21,6 +23,7 @@ internal class MovimientoResidual{
         Arista = arista;
         HaciaAdelante = haciaAdelante;
         CapacidadResidual = capacidadResidual;
+        FlujoAnterior = arista.Flujo;
     }
 }
 
@@ -324,55 +327,58 @@ internal class FordFulkerson{
 
 
     private int CalcularIncremento(
-        List<MovimientoResidual> movimientos)
+    List<MovimientoResidual> movimientos)
     {
-        int incremento =
-            int.MaxValue;
-
-
-        foreach (MovimientoResidual movimiento
-                 in movimientos)
+        if (movimientos == null || movimientos.Count == 0)
         {
-            incremento =
-                Math.Min(
-                    incremento,
-                    movimiento.CapacidadResidual);
+            throw new InvalidOperationException(
+                "No se puede calcular el incremento de un camino vacío.");
+        }
+
+        int incremento = int.MaxValue;
+
+        foreach (MovimientoResidual movimiento in movimientos)
+        {
+            if (movimiento.CapacidadResidual <= 0)
+            {
+                throw new InvalidOperationException(
+                    "El camino contiene un movimiento sin capacidad residual.");
+            }
+
+            incremento = Math.Min(
+                incremento,
+                movimiento.CapacidadResidual);
         }
 
         return incremento;
     }
     private void ActualizarFlujo(
-        List<MovimientoResidual> movimientos,
-        int incremento)
+    List<MovimientoResidual> movimientos,
+    int incremento)
     {
-        foreach (MovimientoResidual movimiento
-                 in movimientos)
+        foreach (MovimientoResidual movimiento in movimientos)
         {
-            Arista arista =
-                movimiento.Arista;
-
-
-            // ==========================================
-            // MOVIMIENTO HACIA ADELANTE
-            // ==========================================
+            Arista arista = movimiento.Arista;
 
             if (movimiento.HaciaAdelante)
             {
                 arista.Flujo += incremento;
             }
-
-            // ==========================================
-            // MOVIMIENTO HACIA ATRÁS
-            // ==========================================
-
             else
             {
                 arista.Flujo -= incremento;
             }
-            // Actualizar capacidad residual
+
+            if (arista.Flujo < 0 ||
+                arista.Flujo > arista.Capacidad)
+            {
+                throw new InvalidOperationException(
+                    $"Flujo inválido en la arista " +
+                    $"{arista.Origen.Nombre} → {arista.Destino.Nombre}.");
+            }
+
             arista.CapacidadResidual =
-                arista.Capacidad -
-                arista.Flujo;
+                arista.Capacidad - arista.Flujo;
         }
     }
 

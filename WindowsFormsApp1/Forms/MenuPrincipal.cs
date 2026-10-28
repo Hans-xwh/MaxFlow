@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Linq;
+using MaxFlow.Model;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -64,11 +65,32 @@ namespace WindowsFormsApp1.Forms
         private void btn_graph_Click(object sender, EventArgs e)
         {
             this.Hide();
-            using (FordFulkersonForm fulkersonForm = new())
+
+            try
             {
-                fulkersonForm.ShowDialog();
+                using (SelectorForm selector = new SelectorForm())
+                {
+                    if (selector.ShowDialog() != DialogResult.OK)
+                        return;
+
+                    Grafo grafoSeleccionado = selector.SelectedGraph;
+
+                    using (FordFulkersonForm fulkersonForm =
+                           new FordFulkersonForm(grafoSeleccionado))
+                    {
+                        fulkersonForm.ShowDialog();
+                    }
+                }
             }
-            this.Show();
+            finally
+            {
+                this.Show();
+            }
+        }
+
+        private void MenuPrincipal_Load(object sender, EventArgs e)
+        {
+
         }
     }
 }

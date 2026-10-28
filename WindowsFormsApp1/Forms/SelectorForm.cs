@@ -92,18 +92,16 @@ public partial class SelectorForm : Form
         // Obtener la cantidad de nodos seleccionada.
         int numNodos = (int)numericUpDown1.Value;
 
-        // Crear un grafo vacío.
+        // Crear el grafo aleatorio.
         Grafo grafo = new Grafo();
-
-        // Generar el grafo aleatorio.
         grafo.GenRandom(numNodos);
 
-        // Asignar el grafo generado al selector.
+        // Guardar el grafo generado.
         SelectedGraph = grafo;
 
         // Indicar que la selección terminó correctamente.
-        this.DialogResult = DialogResult.OK;
-        this.Close();
+        DialogResult = DialogResult.OK;
+        Close();
     }
 }
 
