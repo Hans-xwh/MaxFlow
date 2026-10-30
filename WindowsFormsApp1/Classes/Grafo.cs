@@ -716,7 +716,11 @@ public class Grafo
         }
 
         // Organizar nodos por niveles
-        OrganizarNodosPorNiveles(1000,600); 
+        OrganizarNodosPorNiveles(1000,600);
+
+        //Guardar grafo
+        FilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Grafo Random.csv");
+        this.SaveToFile(FilePath);
     }
 
 
