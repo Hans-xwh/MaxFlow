@@ -10,6 +10,7 @@ namespace MaxFlow.Forms;
 
 public partial class FordFulkersonForm : Form
 {
+    private bool showDetails = true;
     private readonly Grafo grafo;
     private readonly FordFulkerson algoritmo;
 
@@ -88,25 +89,29 @@ public partial class FordFulkersonForm : Form
         if (paso == null)
             return;
 
-        // Mostrar el flujo anterior, el flujo actual y el incremento.
-        string detalleAristas = string.Join(
-            Environment.NewLine,
-            paso.Movimientos.Select(m =>
-                $"{m.Arista.Origen.Nombre} → {m.Arista.Destino.Nombre}\n" +
-                $"  Capacidad: {m.Arista.Capacidad}\n" +
-                $"  Flujo anterior: {m.FlujoAnterior}\n" +
-                $"  Flujo actual: {m.Arista.Flujo}\n" +
-                $"  Incremento del paso: {paso.Incremento}\n" +
-                $"  Movimiento: {(m.HaciaAdelante ? "Directo" : "Inverso")}"
-            )
-        );
+        if (showDetails)
+        {
 
-        MessageBox.Show(
-            detalleAristas,
-            $"Detalle del paso {paso.NumeroPaso}",
-            MessageBoxButtons.OK,
-            MessageBoxIcon.Information
-        );
+            // Mostrar el flujo anterior, el flujo actual y el incremento.
+            string detalleAristas = string.Join(
+                Environment.NewLine,
+                paso.Movimientos.Select(m =>
+                    $"{m.Arista.Origen.Nombre} → {m.Arista.Destino.Nombre}\n" +
+                    $"  Capacidad: {m.Arista.Capacidad}\n" +
+                    $"  Flujo anterior: {m.FlujoAnterior}\n" +
+                    $"  Flujo actual: {m.Arista.Flujo}\n" +
+                    $"  Incremento del paso: {paso.Incremento}\n" +
+                    $"  Movimiento: {(m.HaciaAdelante ? "Directo" : "Inverso")}"
+                )
+            );
+
+            MessageBox.Show(
+                detalleAristas,
+                $"Detalle del paso {paso.NumeroPaso}",
+                MessageBoxButtons.OK,
+                MessageBoxIcon.Information
+            );
+        }
 
         // Resaltar las aristas del camino.
         aristasResaltadas = paso.Movimientos
@@ -129,5 +134,10 @@ public partial class FordFulkersonForm : Form
             $"Flujo acumulado: {algoritmo.FlujoMaximo}";
 
         Pnl_graph.Invalidate();
+    }
+
+    private void ckb_details_CheckedChanged(object sender, EventArgs e)
+    {
+        showDetails = ckb_details.Checked;
     }
 }
