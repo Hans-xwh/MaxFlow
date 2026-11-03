@@ -15,6 +15,7 @@ public partial class FordFulkersonForm : Form
     private readonly FordFulkerson algoritmo;
 
     private List<Arista> aristasResaltadas = new();
+    private List<Arista> aristasCorteMinimo = new List<Arista>();
     private bool algoritmoTerminado = false;
 
     public FordFulkersonForm(Grafo grafoSeleccionado)
@@ -58,7 +59,7 @@ public partial class FordFulkersonForm : Form
 
     private void Pnl_graph_Paint(object sender, PaintEventArgs e)
     {
-        grafo.Draw(e.Graphics, aristasResaltadas);
+        grafo.Draw(e.Graphics, aristasResaltadas, aristasCorteMinimo);
     }
 
     private void Btn_siguiente_paso_Click(object? sender, EventArgs e)
@@ -68,21 +69,78 @@ public partial class FordFulkersonForm : Form
 
         bool haySiguientePaso = algoritmo.SiguientePaso();
 
+
         if (!haySiguientePaso)
         {
             algoritmoTerminado = true;
 
+            // Calcular el corte mínimo.
+            algoritmo.CalcularCorteMinimo();
+
+            // Resaltar las aristas que forman el corte.
+            aristasCorteMinimo =
+                   algoritmo.AristasCorteMinimo.ToList();
+
+            // Quitar el resaltado del último camino aumentante.
+            aristasResaltadas.Clear();
+
+            // Obtener los nodos de ambos conjuntos.
+            string ladoFuente = string.Join(
+                ", ",
+                algoritmo.NodosLadoFuente.Select(n => n.Nombre));
+
+            string ladoSumidero = string.Join(
+                ", ",
+                algoritmo.NodosLadoSumidero.Select(n => n.Nombre));
+
+            // Obtener las aristas del corte.
+            string detalleAristas = algoritmo.AristasCorteMinimo.Count > 0
+                ? string.Join(
+                    Environment.NewLine,
+                    algoritmo.AristasCorteMinimo.Select(a =>
+                        $"{a.Origen.Nombre} → {a.Destino.Nombre} " +
+                        $"(Capacidad: {a.Capacidad})"))
+                : "No hay aristas en el corte.";
+
+            // Comprobar el teorema de flujo máximo - corte mínimo.
+            bool correcto =
+                algoritmo.CapacidadCorteMinimo == algoritmo.FlujoMaximo;
+
+            string verificacion = correcto
+                ? "CORRECTO: ambas cantidades coinciden."
+                : "ADVERTENCIA: los valores no coinciden.";
+
             Lbl_info.Text =
                 "ALGORITMO TERMINADO\n" +
-                "No existen más caminos aumentantes.";
-
+                "No existen más caminos aumentantes.\n" +
+                "Aristas del corte mínimo resaltadas en azul.";
+            
             Lbl_flujo_maximo.Text =
-                $"Flujo máximo: {algoritmo.FlujoMaximo}";
+                $"Flujo máximo: {algoritmo.FlujoMaximo} | " +
+                $"Capacidad del corte: {algoritmo.CapacidadCorteMinimo}";
 
             Btn_siguiente_paso.Enabled = false;
+
+            // Actualizar el grafo antes de mostrar los resultados.
             Pnl_graph.Invalidate();
+
+            MessageBox.Show(
+                $"RESULTADO DEL CORTE MÍNIMO\n\n" +
+                $"Conjunto del origen (S):\n{ladoFuente}\n\n" +
+                $"Conjunto del destino (T):\n{ladoSumidero}\n\n" +
+                $"Aristas del corte:\n{detalleAristas}\n\n" +
+                $"Capacidad total del corte: " +
+                $"{algoritmo.CapacidadCorteMinimo}\n\n" +
+                $"Flujo máximo: {algoritmo.FlujoMaximo}\n\n" +
+                verificacion,
+                "Corte mínimo",
+                MessageBoxButtons.OK,
+                correcto ? MessageBoxIcon.Information : MessageBoxIcon.Warning
+            );
+
             return;
         }
+
 
         var paso = algoritmo.UltimoPaso;
 

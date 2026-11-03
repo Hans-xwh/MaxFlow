@@ -76,12 +76,14 @@ public class Arista
         bool resaltada = false,
         float desplazamiento = 0,
         float ladoEtiqueta = 1,
-        PointF? centroEtiqueta = null
+        PointF? centroEtiqueta = null,
+        bool esCorteMinimo = false
         )
     {
         using Pen Plinea = new Pen(
+            esCorteMinimo ? Color.DodgerBlue :
             resaltada ? Color.Red : Color.DimGray,
-            resaltada ? 4 : 2);
+            (resaltada || esCorteMinimo) ? 4 : 2);
 
         using Brush Btexto = new SolidBrush(Color.Black);
         using Font font = new Font("Arial", 12);
@@ -896,7 +898,7 @@ public class Grafo
         return solapamiento >= 45;
     }
 
-    public void Draw(Graphics g, IEnumerable<Arista>? aristasResaltadas = null)
+    public void Draw(Graphics g, IEnumerable<Arista>? aristasResaltadas = null, IEnumerable<Arista>? aristasCorteMinimo = null)
     {
         g.SmoothingMode =
             System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
@@ -906,6 +908,13 @@ public class Grafo
         HashSet<Arista> resaltadas =
             aristasResaltadas != null
                 ? new HashSet<Arista>(aristasResaltadas)
+                : new HashSet<Arista>();
+        
+        // Convertimos las aristas del corte mínimo en un conjunto
+        // para poder buscarlas rápidamente.
+        HashSet<Arista> corteMinimo =
+            aristasCorteMinimo != null
+                ? new HashSet<Arista>(aristasCorteMinimo)
                 : new HashSet<Arista>();
 
         // Calcular separaciones y posiciones de las etiquetas.
@@ -918,6 +927,8 @@ public class Grafo
         foreach (Arista arista in Aristas)
         {
             bool resaltada = resaltadas.Contains(arista);
+            bool esCorte = corteMinimo.Contains(arista);
+
             var ajuste = desplazamientos[arista];
 
             arista.Draw(
@@ -925,7 +936,8 @@ public class Grafo
                 resaltada,
                 ajuste.offset,
                 ajuste.ladoEtiqueta,
-                posicionesEtiquetas[arista]);
+                posicionesEtiquetas[arista],
+                esCorte);
         }
 
         // Dibujar nodos después

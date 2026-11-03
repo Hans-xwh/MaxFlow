@@ -81,6 +81,13 @@ internal class FordFulkerson{
     // Historial de todos los pasos
     public List<PasoFordFulkerson> Historial { get; private set; } = new List<PasoFordFulkerson>();
     public List<AristaResidual> RedResidual { get; private set; } = new List<AristaResidual>();
+
+    // Resultado del corte mínimo.
+    public List<Nodo> NodosLadoFuente { get; private set; } = new List<Nodo>();
+    public List<Nodo> NodosLadoSumidero { get; private set; } = new List<Nodo>();
+    public List<Arista> AristasCorteMinimo { get; private set; } = new List<Arista>();
+    public int CapacidadCorteMinimo { get; private set; } = 0;
+
     public FordFulkerson(
         Grafo grafo,
         Nodo fuente,
@@ -160,6 +167,66 @@ internal class FordFulkerson{
 
         return true;
     }
+
+
+    public void CalcularCorteMinimo()
+    {
+        if (!Terminado)
+        {
+            throw new InvalidOperationException("El algoritmo debe terminar antes de calcular el corte mínimo.");
+        }
+        // Identificar los nodos alcanzables desde la fuente.
+        HashSet<Nodo> alcanzables = new HashSet<Nodo>();
+        Queue<Nodo> cola = new Queue<Nodo>();
+
+        alcanzables.Add(fuente);
+        cola.Enqueue(fuente);
+
+        while (cola.Count > 0)
+        {
+            Nodo actual = cola.Dequeue();
+
+            foreach (Arista arista in grafo.Aristas)
+            {
+                // Movimiento residual hacia adelante.
+                if (arista.Origen == actual &&
+                    arista.Capacidad - arista.Flujo > 0)
+                {
+                    if (alcanzables.Add(arista.Destino))
+                        cola.Enqueue(arista.Destino);
+                }
+
+                // Movimiento residual hacia atrás.
+                if (arista.Destino == actual &&
+                    arista.Flujo > 0)
+                {
+                    if (alcanzables.Add(arista.Origen))
+                        cola.Enqueue(arista.Origen);
+                }
+            }
+        }
+
+        // Dividir los nodos en los dos conjuntos.
+        NodosLadoFuente = grafo.Nodos
+            .Where(n => alcanzables.Contains(n))
+            .ToList();
+
+        NodosLadoSumidero = grafo.Nodos
+            .Where(n => !alcanzables.Contains(n))
+            .ToList();
+
+        // Buscar las aristas originales que cruzan el corte.
+        AristasCorteMinimo = grafo.Aristas
+            .Where(a =>
+                alcanzables.Contains(a.Origen) &&
+                !alcanzables.Contains(a.Destino))
+            .ToList();
+
+        // Sumar sus capacidades.
+        CapacidadCorteMinimo = AristasCorteMinimo
+            .Sum(a => a.Capacidad);
+    }
+
     private List<MovimientoResidual> BuscarCaminoAumentante()
     {
         Queue<Nodo> cola = new Queue<Nodo>();
